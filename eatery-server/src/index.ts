@@ -1,5 +1,5 @@
 import express, { urlencoded, json } from "express";
-
+const API_KEY = process.env.APIKEY 
 const port = process.env.PORT || 8000;
 const app = express();
 
