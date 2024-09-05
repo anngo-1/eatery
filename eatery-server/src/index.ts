@@ -8,8 +8,8 @@ const app = express();
 app.use(urlencoded({ extended: true }));
 app.use(json());
 
-const searchPlaces = async () => {
-  const url = 'https://places.googleapis.com/v1/places:searchText';
+const searchPlaces = async (coordinates : Number[], radius: Number, max_results : Number) => {
+  const url = 'https://places.googleapis.com/v1/places:searchNearby';
   const headers = {
     'Content-Type': 'application/json',
     'X-Goog-Api-Key': API_KEY || 'NO_API_KEY_REQUEST_GONNA_FAIL',
@@ -17,7 +17,16 @@ const searchPlaces = async () => {
   };
 
   const data = {
-    textQuery:  'Spicy Vegetarian Food in Sydney, Australia'
+  includedTypes: ["restaurant"],
+  maxResultCount: max_results,
+  locationRestriction: {
+    "circle": {
+      "center": {
+        "latitude": coordinates[0], // 37.7937
+        "longitude": coordinates[1]}, //-122.3965
+      "radius": radius
+    }
+  }
   };
 
   const options = {
@@ -32,7 +41,8 @@ const searchPlaces = async () => {
     return json;
   } catch (error) {
     console.error(error);
-    throw error;
+    return "there was an error."
+    //throw error;
   }
 };
 
@@ -41,35 +51,9 @@ app.get("/", (req, res) => {
 });
 
 
-app.get("/searchplaces", (req, res) => {
-  const url = 'https://places.googleapis.com/v1/places:searchText';
-  const headers =  {
-    'Content-Type': 'application/json',
-    'X-Goog-Api-Key': API_KEY,
-    'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.priceLevel'
-  };
-
-  const data = {
-    textQuery: 'Spicy Vegetarian Food in Sydney, Australia'
-  };
-
-  const options = {
-    method: 'POST',
-    headers,
-    body: JSON.stringify(data)
-  };
-
-  try {
-    const response = fetch(url, options);
-    const json =  await response.json();
-    return json;
-  } catch (error) {
-    console.log(error)
-    throw(error)
-    
-  }
-
-
+app.get("/searchplaces", async (req, res) => {
+  const search_result = await searchPlaces([37.7937, -122.3965], 500.0, 10) 
+  res.status(200).json({msg: "successful API call.", result:`${JSON.stringify(search_result)}`})
 });
 
 
