@@ -17,8 +17,8 @@ export default function Nav() {
   return (
  
     <ChakraProvider>
-        <Flex borderColor='black' borderBottom='1px' bg='white' p={4} h={20} alignItems={'center'} justifyContent={'space-between'}>
-          <Heading as='h1' size='xl'>eatery</Heading>
+        <Flex borderColor='black' borderBottom='1px' bg='white' p={4} h={24} alignItems={'center'} justifyContent={'space-between'}>
+          <p className="text-2xl">eatery</p>
 
           <Flex alignItems={'center'}>
           <Image

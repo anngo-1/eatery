@@ -8,10 +8,19 @@ export default function Home() {
 
     
      <Nav/>
-    <Box>
+     <Box
+      borderColor="black"
+      borderRadius={48}
+      border="1px" 
+      m={4}
+      css={{
+        resize: "vertical",    // Allows the box to be resized both vertically and horizontally
+        overflow: "auto",  // Ensures that content inside remains scrollable
+        height: "800px", // Set a minimum height and width for better resizing control
+      }}
+    >
 
-
-    </Box>
+    </Box>  
 
   </ChakraProvider>
   ); 
