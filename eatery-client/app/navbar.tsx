@@ -8,37 +8,17 @@ import {
   Stack,
   Heading
 } from '@chakra-ui/react'
-import { MoonIcon, SunIcon } from '@chakra-ui/icons'
 
 interface Props {
   children: React.ReactNode
-}
-
-const NavLink= (props: Props) => {
-  const { children } = props
-
-  return (
-    <Box
-      as="a"
-      px={2}
-      py={1}
-      rounded={'md'}
-      _hover={{
-        textDecoration: 'none',
-        bg: 'gray.200'
-      }}
-      href={'#'}>
-      {children}
-    </Box>
-  )
 }
 
 export default function Nav() {
   return (
  
     <ChakraProvider>
-        <Flex bg='gray.200' p={4} h={20} alignItems={'center'} justifyContent={'space-between'}>
-          <Heading as='h2' size='xl'>eatery</Heading>
+        <Flex borderColor='black' borderBottom='1px' bg='white' p={4} h={20} alignItems={'center'} justifyContent={'space-between'}>
+          <Heading as='h1' size='xl'>eatery</Heading>
 
           <Flex alignItems={'center'}>
           <Image

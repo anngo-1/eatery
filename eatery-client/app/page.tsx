@@ -9,14 +9,7 @@ export default function Home() {
     
      <Nav/>
     <Box>
-     <Filter 
-      location="San Diego"
-      distance={50} 
-      include="Chinese"
-      avoid="Korean Hotdog"
-      pricerange = {[0.00, 25.00]}
 
-      />
 
     </Box>
 

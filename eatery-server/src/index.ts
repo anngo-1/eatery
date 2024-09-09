@@ -13,7 +13,12 @@ app.get("/", (req, res) => {
 
 
 app.get("/searchplaces", async (req, res) => {
-  const search_result = await searchPlaces([37.7937, -122.3965], 500.0, 10) 
+  const coordinates : Number[] = [parseFloat(req.query.longitude), parseFloat(req.query.latitude)]
+  const radius = req.query.radius
+  const max_results = req.query.mresults
+
+
+  const search_result = await searchPlaces(coordinates, radius, max_results) 
   res.status(200).json({msg: "successful API call.", result:`${JSON.stringify(search_result)}`})
 });
 
@@ -22,5 +27,4 @@ app.get("/searchplaces", async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is listening at port ${port}`);
 });
-
 
