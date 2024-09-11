@@ -1,10 +1,11 @@
 import fetch from 'node-fetch';
 export const searchPlaces = async (coordinates : Number[], radius: Number, max_results : Number) => {
-  const API_KEY = process.env.APIKEY 
+  const API_KEY = process.env.APIKEY
+  console.log(API_KEY)
   const url = 'https://places.googleapis.com/v1/places:searchNearby';
   const headers = {
     'Content-Type': 'application/json',
-    'X-Goog-Api-Key': API_KEY || 'NO_API_KEY_REQUEST_GONNA_FAIL',
+    'X-Goog-Api-Key': API_KEY || 'FAIL',
     'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.priceLevel'
   };
 
@@ -14,8 +15,8 @@ export const searchPlaces = async (coordinates : Number[], radius: Number, max_r
   locationRestriction: {
     "circle": {
       "center": {
-        "latitude": coordinates[0], // 37.7937
-        "longitude": coordinates[1]}, //-122.3965
+        "latitude": coordinates[1], // 37.7937
+        "longitude": coordinates[0]}, //-122.3965
       "radius": radius
     }
   }

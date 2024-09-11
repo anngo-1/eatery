@@ -1,4 +1,4 @@
-import express, { urlencoded, json } from "express";
+import express, { urlencoded, json, Request } from "express";
 import { searchPlaces } from './search.js'
 const API_KEY = process.env.APIKEY 
 const port = process.env.PORT || 8000;
@@ -13,12 +13,13 @@ app.get("/", (req, res) => {
 
 
 app.get("/searchplaces", async (req, res) => {
-  const coordinates : Number[] = [parseFloat(req.query.longitude), parseFloat(req.query.latitude)]
-  const radius = req.query.radius
-  const max_results = req.query.mresults
+  const longitude = parseFloat(req.query.longitude as string)
+  const latitude = parseFloat(req.query.latitude as string)
+  const radius = parseFloat(req.query.radius as string)
+  const max_results = parseFloat(req.query.mresults as string)
 
 
-  const search_result = await searchPlaces(coordinates, radius, max_results) 
+  const search_result = await searchPlaces([longitude, latitude], radius, max_results) 
   res.status(200).json({msg: "successful API call.", result:`${JSON.stringify(search_result)}`})
 });
 

@@ -10,13 +10,13 @@ export default function Home() {
      <Nav/>
      <Box
       borderColor="black"
-      borderRadius={48}
+      borderRadius={24}
       border="1px" 
-      m={4}
+      m={2}
       css={{
-        resize: "vertical",    // Allows the box to be resized both vertically and horizontally
-        overflow: "auto",  // Ensures that content inside remains scrollable
-        height: "800px", // Set a minimum height and width for better resizing control
+        resize: "vertical",    
+        overflow: "auto", 
+        height: "calc(100vh - 16vh)", 
       }}
     >
 
