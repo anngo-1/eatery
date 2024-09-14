@@ -4,7 +4,8 @@ import { searchPlaces } from './search.js'
 const API_KEY = process.env.APIKEY 
 const port = process.env.PORT || 8000;
 const app = express();
-let messages = [];
+let messages = [{"role": "system", "content": "You are a helpful assistant." }
+];
 app.use(urlencoded({ extended: true }));
 app.use(json());
 
@@ -23,13 +24,16 @@ app.get("/searchplaces", async (req, res) => {
   res.status(200).json({msg: "successful API call.", result:`${JSON.stringify(search_result)}`})
 });
 
+// save this for frontend
 app.get("/chat", async (req, res) => {
   messages = [{"role": "system", "content": "You are a helpful assistant."},
         {"role": "user", "content": "Who won the world series in 2020?"},
         {"role": "assistant", "content": "The Los Angeles Dodgers won the World Series in 2020."},
         {"role": "user", "content": "Where was it played?"}]
-  const response = await chat(messages) 
-  res.status(200).json({msg: "chat succesful", result:`${JSON.stringify(response)}`})
+  //messages.push({"role": "user", "content":`${req.query.chat}`})
+  const response = await chat(messages)
+  messages.push({"role":response['choices'][0]['message']['role'], "content":response['choices'][0]['message']['content'] || "Sorry, I cannot help you with that"})
+  res.status(200).json({msg: "chat successful", result:`${JSON.stringify(messages)}`})
 });
 
 app.listen(port, () => {

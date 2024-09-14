@@ -1,12 +1,11 @@
 import fetch from 'node-fetch';
 export const searchPlaces = async (coordinates : Number[], radius: Number, max_results : Number) => {
   const API_KEY = process.env.APIKEY
-  console.log(API_KEY)
   const url = 'https://places.googleapis.com/v1/places:searchNearby';
   const headers = {
     'Content-Type': 'application/json',
     'X-Goog-Api-Key': API_KEY || 'FAIL',
-    'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.priceLevel'
+    'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.priceLevel,places.editorialSummary'
   };
 
   const data = {
