@@ -1,10 +1,8 @@
-// LocationMap.tsx
 'use client'
-import React, { useState, useCallback } from 'react';
-import { GoogleMap, LoadScript, Marker, Circle } from '@react-google-maps/api';
-
-// Replace with your Google Maps API key
-const GOOGLE_MAPS_API_KEY = 'YOUR_GOOGLE_MAPS_API_KEY';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Circle, Popup, useMapEvents } from 'react-leaflet';
+import { LatLng } from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 const containerStyle = {
   height: '75vh',
@@ -17,49 +15,50 @@ const center = {
 };
 
 const LocationMap = () => {
-  const [position, setPosition] = useState<google.maps.LatLngLiteral | null>(null);
-  const [radius, setRadius] = useState<number>(500);
+  const [position, setPosition] = useState(null);
+  const [radius, setRadius] = useState(500);
 
-  const handleRadiusChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleRadiusChange = useCallback((event) => {
     setRadius(parseFloat(event.target.value));
   }, []);
 
-  const onMapClick = (e: google.maps.MapMouseEvent) => {
-    if (e.latLng) {
-      setPosition({
-        lat: e.latLng.lat(),
-        lng: e.latLng.lng(),
-      });
-    }
-  };
+  function MapEvents() {
+    useMapEvents({
+      click(e) {
+        setPosition(e.latlng);
+      },
+    });
+    return null;
+  }
 
   return (
     <div>
-      <LoadScript googleMapsApiKey={GOOGLE_MAPS_API_KEY}>
-        <GoogleMap
-          mapContainerStyle={containerStyle}
-          center={center}
-          zoom={13}
-          onClick={onMapClick}
-        >
-          {position && (
-            <>
-              <Marker position={position} />
-              <Circle
-                center={position}
-                radius={radius}
-                options={{
-                  strokeColor: '#0000FF',
-                  strokeOpacity: 0.8,
-                  strokeWeight: 2,
-                  fillColor: '#0000FF',
-                  fillOpacity: 0.35,
-                }}
-              />
-            </>
-          )}
-        </GoogleMap>
-      </LoadScript>
+      <MapContainer style={containerStyle} center={center} zoom={13}>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='© OpenStreetMap contributors'
+        />
+        <MapEvents />
+        {position && (
+          <>
+            <Marker position={position}>
+              <Popup>
+                A marker at {position.lat.toFixed(4)}, {position.lng.toFixed(4)}
+              </Popup>
+            </Marker>
+            <Circle
+              center={position}
+              radius={radius}
+              pathOptions={{
+                color: '#0000FF',
+                fillColor: '#0000FF',
+                fillOpacity: 0.35,
+                weight: 2,
+              }}
+            />
+          </>
+        )}
+      </MapContainer>
       <div style={{ marginTop: '10px' }}>
         <label>Radius (meters):</label>
         <input
@@ -73,5 +72,4 @@ const LocationMap = () => {
   );
 };
 
-export default React.memo(LocationMap);
-
+export default LocationMap;
