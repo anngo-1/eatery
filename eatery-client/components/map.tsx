@@ -58,7 +58,8 @@ function MapEvents({ setPosition }: { setPosition: (latlng: L.LatLng) => void })
 
 const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
   const [position, setPosition] = useState<L.LatLng | null>(null);
-  const [radius, setRadius] = useState<number>(1);
+  const [radius, setRadius] = useState<number>(0.1); // Default to 0.1 miles
+  const [radiusInput, setRadiusInput] = useState<string>(''); // Input state for the radius input box
   const [showMap, setShowMap] = useState<boolean>(false);
   const [fetchingLocation, setFetchingLocation] = useState<boolean>(false);
   const [manualMode, setManualMode] = useState<boolean>(false);
@@ -70,8 +71,9 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
 
   const handleRadiusChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
+    setRadiusInput(value);
     const parsedValue = parseFloat(value);
-    setRadius(!isNaN(parsedValue) && parsedValue >= 0 ? parsedValue : 1);
+    setRadius(!isNaN(parsedValue) && parsedValue > 0 ? parsedValue : 0.1); // Fallback to 0.1 if input is empty or invalid
   }, []);
 
   const handleInitializeMap = () => {
@@ -180,7 +182,7 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
                     <FormLabel fontWeight="bold" fontSize={{ base: "xs", md: "sm" }}>Search Radius (miles)</FormLabel>
                     <Input
                       type="number"
-                      value={radius}
+                      value={radiusInput}
                       onChange={handleRadiusChange}
                       size="sm"
                       width="100%"
