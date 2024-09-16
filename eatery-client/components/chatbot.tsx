@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   Box,
   Flex,
@@ -10,6 +10,7 @@ import {
   IconButton,
   useColorModeValue,
   ScaleFade,
+  Textarea,
 } from "@chakra-ui/react";
 import { FiSend } from "react-icons/fi";
 
@@ -22,6 +23,13 @@ type Message = {
 const Chatbot: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState<string>("");
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // Scroll to the bottom of the chat when a new message is added
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   // Function to handle sending the message
   const handleSendMessage = async () => {
@@ -58,26 +66,30 @@ const Chatbot: React.FC = () => {
     });
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
   return (
     <Flex
-      minH='75vh'
       direction="column"
       align="center"
       justify="center"
-      maxH='75vh'
       w="100%"
+      h="100%"
       bg="transparent"
     >
       <Box
-        minH='75vh'
-        maxH='75vh'
         bg="transparent"
         w="100%"
         h="100%"
         p={4}
         display="flex"
         flexDirection="column"
-        justifyContent="space-between"
+        justifyContent="flex-end"
       >
         {/* Chat Messages */}
         <VStack
@@ -110,7 +122,7 @@ const Chatbot: React.FC = () => {
                   borderWidth="1px"
                   borderColor={message.sender === "user" ? "gray.500" : "gray.300"} // Subtle border
                 >
-                  <Text>{message.text}</Text>
+                  <Text whiteSpace="pre-wrap">{message.text}</Text>
                 </Box>
                 {message.sender === "user" && (
                   <Avatar size="sm" name="User" bg="gray.600" ml={2} />
@@ -118,19 +130,16 @@ const Chatbot: React.FC = () => {
               </Flex>
             </ScaleFade>
           ))}
+          <div ref={messagesEndRef} />
         </VStack>
 
         {/* Input Box */}
         <Flex as="form" onSubmit={(e) => e.preventDefault()} w="100%">
-          <Input
+          <Textarea
             placeholder="Type your message..."
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSendMessage();
-              }
-            }}
+            onKeyDown={handleKeyDown}
             flex="1"
             border="1px solid"
             borderColor="gray.500" // Thinner border for minimalism
@@ -142,6 +151,9 @@ const Chatbot: React.FC = () => {
             borderRadius="lg"
             boxShadow="sm"
             transition="border-color 0.2s"
+            resize="none"
+            rows={1}
+            minHeight="40px"
           />
           <IconButton
             icon={<FiSend />}
@@ -161,4 +173,3 @@ const Chatbot: React.FC = () => {
 };
 
 export default Chatbot;
-
