@@ -46,7 +46,7 @@ export default function Home() {
               py={{ base: 1, md: 2 }}
               fontWeight="semibold"
             >
-              Location
+             Map 
             </Tab>
             <Tab
               _selected={{ color: 'black', borderBottom: '2px solid black' }}
