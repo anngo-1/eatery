@@ -2,7 +2,7 @@ import { Box, ChakraProvider, Tabs, TabList, TabPanels, Tab, TabPanel } from '@c
 import Chatbot from '../components/chatbot';
 import Nav from '../components/navbar';
 import Feed from '../components/feed'; // Adjust the path as needed
-import { FeedItemData, LocationMapProps } from '../components/map';
+import { FeedItemData } from '../components/map';
 import LocationMap from '../components/map';
 // Sample feed data
 const feedData: FeedItemData[] = [
@@ -46,17 +46,7 @@ export default function Home() {
               py={{ base: 1, md: 2 }}
               fontWeight="semibold"
             >
-              Feed
-            </Tab>
-            <Tab
-              _selected={{ color: 'black', borderBottom: '2px solid black' }}
-              _hover={{ color: 'gray.600' }}
-              fontSize={{ base: 'sm', md: 'md' }}
-              px={{ base: 2, md: 4 }}
-              py={{ base: 1, md: 2 }}
-              fontWeight="semibold"
-            >
-              Location
+             Map 
             </Tab>
             <Tab
               _selected={{ color: 'black', borderBottom: '2px solid black' }}
@@ -82,20 +72,6 @@ export default function Home() {
                 flexDirection="column"
               >
                 <Chatbot />
-              </Box>
-            </TabPanel>
-
-            <TabPanel display="flex" flexDirection="column" flex="1">
-              <Box
-                borderColor="gray.200"
-                borderRadius={12}
-                border="1px"
-                flex="1"
-                maxH='78.5vh'
-                p={4}
-                overflow="auto"
-              >
-                <Feed feedData={feedData} />
               </Box>
             </TabPanel>
 

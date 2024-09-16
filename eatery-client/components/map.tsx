@@ -5,7 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import {
   Box, Input, Checkbox, Stack, FormControl, FormLabel,
   Button, Spinner, Text, HStack, Icon, Divider, VStack, Image,
-  useBreakpointValue, useDisclosure
+  useBreakpointValue, useDisclosure, FormErrorMessage
 } from '@chakra-ui/react';
 import { FaStar } from 'react-icons/fa';
 
@@ -49,7 +49,7 @@ const Feed: React.FC<{ feedData: FeedItemData[] }> = ({ feedData }) => (
 
 const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
   const [position, setPosition] = useState<L.LatLng | null>(null);
-  const [radius, setRadius] = useState<number>(500);
+  const [radius, setRadius] = useState<number | string>(500);
   const [loading, setLoading] = useState<boolean>(true);
   const mapRef = useRef<L.Map | null>(null);
   const center: L.LatLngExpression = [51.505, -0.09];
@@ -57,7 +57,15 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleRadiusChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setRadius(parseFloat(event.target.value));
+    const value = event.target.value;
+    if (value === '') {
+      setRadius('');
+    } else {
+      const parsedValue = parseFloat(value);
+      if (!isNaN(parsedValue) && parsedValue >= 0) {
+        setRadius(parsedValue);
+      }
+    }
   }, []);
 
   function MapEvents() {
@@ -110,14 +118,14 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
             attribution='© OpenStreetMap contributors'
           />
           <MapEvents />
-          {position && (
+          {position && radius !== '' && Number(radius) > 0 && (
             <>
               <Marker position={position}>
                 <Popup>A marker at {position.lat.toFixed(4)}, {position.lng.toFixed(4)}</Popup>
               </Marker>
               <Circle
                 center={position}
-                radius={radius}
+                radius={Number(radius)}
                 pathOptions={{
                   color: '#0000FF',
                   fillColor: 'transparent',
@@ -143,7 +151,7 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
           maxWidth="300px"
         >
           <Stack spacing={3}>
-            <FormControl>
+            <FormControl isInvalid={Number(radius) >= 0 && Number(radius) < 10}>
               <FormLabel>Radius (meters)</FormLabel>
               <Input
                 type="number"
@@ -151,7 +159,13 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
                 onChange={handleRadiusChange}
                 size="md"
                 width="200px"
+                placeholder="Enter radius"
               />
+              {Number(radius) >= 0 && Number(radius) < 10 && (
+                <FormErrorMessage>
+                  Riku may not find any restaurants with this small of a radius. Consider putting over 10!
+                </FormErrorMessage>
+              )}
             </FormControl>
 
             <FormControl display="flex" alignItems="center">
@@ -180,7 +194,7 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
         maxWidth="300px"
       >
         <Stack spacing={2}>
-          <FormControl>
+          <FormControl isInvalid={Number(radius) >= 0 && Number(radius) < 10}>
             <FormLabel fontSize="sm">Radius (meters)</FormLabel>
             <Input
               type="number"
@@ -189,7 +203,13 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
               size="sm"
               width="120px"
               fontSize="sm"
+              placeholder="Enter radius"
             />
+            {Number(radius) >= 0 && Number(radius) < 10 && (
+              <FormErrorMessage fontSize="xs">
+                Riku may not find any restaurants with this small of a radius. Consider putting over 10!
+              </FormErrorMessage>
+            )}
           </FormControl>
 
           <FormControl display="flex" alignItems="center">
