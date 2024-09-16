@@ -46,7 +46,7 @@ export default function Home() {
               py={{ base: 1, md: 2 }}
               fontWeight="semibold"
             >
-             Map 
+              Location
             </Tab>
             <Tab
               _selected={{ color: 'black', borderBottom: '2px solid black' }}
@@ -75,7 +75,7 @@ export default function Home() {
               </Box>
             </TabPanel>
 
-            <TabPanel display="flex" flexDirection="column" flex="1">
+                     <TabPanel display="flex" flexDirection="column" flex="1">
               <Box
                 borderColor="gray.200"
                 borderRadius={12}
