@@ -58,8 +58,7 @@ function MapEvents({ setPosition }: { setPosition: (latlng: L.LatLng) => void })
 
 const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
   const [position, setPosition] = useState<L.LatLng | null>(null);
-  const [radius, setRadius] = useState<number>(0.1); // Default to 0.1 miles
-  const [radiusInput, setRadiusInput] = useState<string>(''); // Input state for the radius input box
+  const [radius, setRadius] = useState<number>(1);
   const [showMap, setShowMap] = useState<boolean>(false);
   const [fetchingLocation, setFetchingLocation] = useState<boolean>(false);
   const [manualMode, setManualMode] = useState<boolean>(false);
@@ -71,9 +70,8 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
 
   const handleRadiusChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    setRadiusInput(value);
     const parsedValue = parseFloat(value);
-    setRadius(!isNaN(parsedValue) && parsedValue > 0 ? parsedValue : 0.1); // Fallback to 0.1 if input is empty or invalid
+    setRadius(!isNaN(parsedValue) && parsedValue >= 0 ? parsedValue : 1);
   }, []);
 
   const handleInitializeMap = () => {
@@ -127,10 +125,10 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
         h={20}
         alignItems={'center'}
         justifyContent={'space-between'}
-        position='fixed' // Make the navbar fixed
-        top={0} // Position it at the top
-        width='100%' // Ensure it spans the full width of the viewport
-        zIndex={1000} // Ensure it stays above other content
+        position='fixed' 
+        top={0} 
+        width='100%' 
+        zIndex={1000} 
       >
         <p className="text-2xl">eatery</p>
         <Flex alignItems={'center'}>
@@ -182,7 +180,7 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
                     <FormLabel fontWeight="bold" fontSize={{ base: "xs", md: "sm" }}>Search Radius (miles)</FormLabel>
                     <Input
                       type="number"
-                      value={radiusInput}
+                      value={radius}
                       onChange={handleRadiusChange}
                       size="sm"
                       width="100%"
@@ -200,7 +198,7 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
             <Flex justifyContent="center" alignItems="center" height="100%" bg="gray.50">
               <Box p={6} bg="white" borderRadius="lg" shadow="xl" width="90%" maxWidth="400px" textAlign="center">
                 <Icon as={FaMapMarkerAlt} w={12} h={12} color="gray.600" mb={4} />
-                <Text fontSize="xl" fontWeight="bold" mb={4}>Select Map Initialization</Text>
+                <Text fontSize="xl" fontWeight="bold" mb={4}>Initialize Location</Text>
                 <VStack spacing={4}>
                   <Button
                     colorScheme="gray"
