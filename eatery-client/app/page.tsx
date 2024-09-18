@@ -2,8 +2,8 @@ import { Box, ChakraProvider, Tabs, TabList, TabPanels, Tab, TabPanel } from '@c
 import Chatbot from '../components/chatbot';
 import Nav from '../components/navbar';
 import Feed from '../components/feed'; // Adjust the path as needed
-import { FeedItemData } from '../components/map';
-import LocationMap from '../components/map';
+import { FeedItemData } from '../components/main';
+import LocationMap from '../components/main';
 // Sample feed data
 const feedData: FeedItemData[] = [
   { id: 1, title: 'Cafe Delight', description: 'Best coffee in town', image: '/coffee.jpg', rating: 4.8 },
