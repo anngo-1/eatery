@@ -5,8 +5,12 @@ import {
   Box,
   Flex,
   Image,
+  Icon
 } from '@chakra-ui/react'
 
+import {
+SettingsIcon,
+} from '@chakra-ui/icons'
 export default function Nav() {
   return (
     <ChakraProvider>
@@ -22,14 +26,11 @@ export default function Nav() {
         top={0} // Position it at the top
         width='100%' // Ensure it spans the full width of the viewport
         zIndex={1000} // Ensure it stays above other content
+
       >
-        <p className="text-2xl">eatery</p>
+            <p className="text-2xl">eatery</p>
         <Flex alignItems={'center'}>
-          <Image
-            borderRadius='full'
-            boxSize='36px'
-            src='github.png'
-          />
+         <Icon as={SettingsIcon} boxSize={6}/> 
         </Flex>
       </Flex>
     </ChakraProvider>

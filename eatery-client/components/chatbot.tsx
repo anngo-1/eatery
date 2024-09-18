@@ -21,17 +21,25 @@ type Message = {
 };
 
 const Chatbot: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>
+  ([
+    {
+      id: 0,
+      sender: "bot",
+      text: `Hi! I’m Riku! I'm here to help you find some great food.\nLet's get started by autodetecting your location and setting a search radius by clicking on the map (you can move it anytime!). If that doesn’t work, just manually select your spot! \nI’ll ask a few quick questions to see what you're craving!`
+    }
+
+
+
+  ]); 
   const [inputValue, setInputValue] = useState<string>("");
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    // Scroll to the bottom of the chat when a new message is added
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Function to handle sending the message
   const handleSendMessage = async () => {
     if (inputValue.trim() === "") return;
 
@@ -44,7 +52,6 @@ const Chatbot: React.FC = () => {
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setInputValue(""); // Clear input after sending
 
-    // Placeholder: API call for bot response
     const botResponseText = await getBotResponse(userMessage.text);
 
     const botMessage: Message = {
@@ -108,7 +115,7 @@ const Chatbot: React.FC = () => {
                 w="100%"
               >
                 {message.sender === "bot" && (
-                  <Avatar size="sm" name="Bot" bg="gray.600" mr={2} />
+                  <Avatar src='rikuicon.jpg' size="sm" name="Bot" bg="gray.600" mr={2} />
                 )}
                 <Box
                   bg={message.sender === "user" ? "gray.700" : "gray.200"}

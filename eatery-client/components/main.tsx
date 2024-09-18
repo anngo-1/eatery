@@ -63,15 +63,23 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
   const [fetchingLocation, setFetchingLocation] = useState<boolean>(false);
   const [manualMode, setManualMode] = useState<boolean>(false);
   const center: L.LatLngExpression = [51.505, -0.09];
-  
+  const geo_options = {
+    enableHighAccuracy: false,
+    timeout: 60000,
+    maximumAge: Infinity
+
+  } 
   const toast = useToast();
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   const handleRadiusChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
+    let value = event.target.value;
+    if (value == '') {
+      
+    }
     const parsedValue = parseFloat(value);
-    setRadius(!isNaN(parsedValue) && parsedValue >= 0 ? parsedValue : 1);
+    setRadius(parsedValue);
   }, []);
 
   const handleInitializeMap = () => {
@@ -85,7 +93,8 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
 
     setFetchingLocation(true);
 
-    navigator.geolocation.getCurrentPosition(
+    navigator.geolocation.getCurrentPosition
+      ( 
       (position) => {
         const { latitude, longitude } = position.coords;
         setPosition(L.latLng(latitude, longitude));
@@ -104,7 +113,8 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
           duration: 5000,
           isClosable: true,
         });
-      }
+      },
+      geo_options
     );
   };
 
@@ -116,29 +126,6 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
 
   return (
     <ChakraProvider>
-      {/* Fixed Navbar */}
-      <Flex
-        borderColor='black'
-        borderBottom='1px'
-        bg='white'
-        p={4}
-        h={20}
-        alignItems={'center'}
-        justifyContent={'space-between'}
-        position='fixed' 
-        top={0} 
-        width='100%' 
-        zIndex={1000} 
-      >
-        <p className="text-2xl">eatery</p>
-        <Flex alignItems={'center'}>
-          <Image
-            borderRadius='full'
-            boxSize='36px'
-            src='github.png'
-          />
-        </Flex>
-      </Flex>
 
       <Flex direction={{ base: 'column', md: 'row' }} h="100vh" pt="80px"> {/* Add top padding to account for the navbar height */}
         <Box h={{ base: 'calc(50% - 1rem)', md: '100%' }} w={{ base: '100%', md: '60%' }} position="relative" mb={{ base: 0, md: 0 }} mr={{ md: 0 }}>
