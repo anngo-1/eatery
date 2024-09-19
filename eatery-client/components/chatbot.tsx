@@ -26,10 +26,15 @@ const Chatbot: React.FC = () => {
     {
       id: 0,
       sender: "bot",
-      text: `Hi! I’m Riku! I'm here to help you find some great food.\nLet's get started by autodetecting your location and setting a search radius by clicking on the map (you can move it anytime!). If that doesn’t work, just manually select your spot! \nI’ll ask a few quick questions to see what you're craving!`
+      text: `Hi! I’m Riku! I'm here to help you find some great food.\nLet's get started by autodetecting your location and setting a search radius by clicking on the map (you can move it anytime!). If that doesn’t work, just manually select your spot!`
+    },
+
+    {
+      id: 1,
+      sender:"bot",
+      text: "Let me know what you're looking for in terms of food, and I'll put those locations on your map and feed!"
+
     }
-
-
 
   ]); 
   const [inputValue, setInputValue] = useState<string>("");

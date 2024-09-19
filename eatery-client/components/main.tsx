@@ -1,11 +1,11 @@
 'use client'
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { MapContainer, TileLayer, useMapEvents, Circle } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import {
-  Box, Input, Stack, FormControl, FormLabel, ChakraProvider,
-  Button, Spinner, Text, HStack, VStack, Icon, Image,
+  Box, Stack, FormControl, FormLabel, ChakraProvider,
+  Button, Spinner, Text, HStack, VStack, Icon, Image, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper,
   useBreakpointValue, useToast, Flex, Tabs, TabList, TabPanels, Tab, TabPanel
 } from '@chakra-ui/react';
 import { FaStar, FaMapMarkerAlt, FaComments, FaList } from 'react-icons/fa';
@@ -58,7 +58,7 @@ function MapEvents({ setPosition }: { setPosition: (latlng: L.LatLng) => void })
 
 const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
   const [position, setPosition] = useState<L.LatLng | null>(null);
-  const [radius, setRadius] = useState<number>(1);
+  const [radius, setRadius] = useState<string>('1');  // Store the input as a string to allow for empty values
   const [showMap, setShowMap] = useState<boolean>(false);
   const [fetchingLocation, setFetchingLocation] = useState<boolean>(false);
   const [manualMode, setManualMode] = useState<boolean>(false);
@@ -67,20 +67,21 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
     enableHighAccuracy: false,
     timeout: 60000,
     maximumAge: Infinity
-
-  } 
+  };
   const toast = useToast();
 
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  const handleRadiusChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    let value = event.target.value;
-    if (value == '') {
-      
+  // Error-checked radius change handler
+  const handleRadiusChange = (valueAsString: string, valueAsNumber: number) => {
+    if (valueAsString === '' || isNaN(valueAsNumber)) {
+      setRadius('');  // Allow clearing the input completely
+    } else if (valueAsNumber >= 0) {
+      setRadius(valueAsString);  // Accept valid input
+    } else {
+      setRadius('1');  // Fallback to 1 mile if the input is invalid
     }
-    const parsedValue = parseFloat(value);
-    setRadius(parsedValue);
-  }, []);
+  };
 
   const handleInitializeMap = () => {
     toast({
@@ -93,8 +94,7 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
 
     setFetchingLocation(true);
 
-    navigator.geolocation.getCurrentPosition
-      ( 
+    navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
         setPosition(L.latLng(latitude, longitude));
@@ -126,7 +126,6 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
 
   return (
     <ChakraProvider>
-
       <Flex direction={{ base: 'column', md: 'row' }} h="100vh" pt="80px"> {/* Add top padding to account for the navbar height */}
         <Box h={{ base: 'calc(50% - 1rem)', md: '100%' }} w={{ base: '100%', md: '60%' }} position="relative" mb={{ base: 0, md: 0 }} mr={{ md: 0 }}>
           {showMap ? (
@@ -145,7 +144,7 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
                 {position && (
                   <Circle
                     center={position}
-                    radius={milesToMeters(radius)}
+                    radius={milesToMeters(parseFloat(radius) || 0)}  // Convert to number, fallback to 0 if empty
                     pathOptions={{ color: 'black', fillColor: 'white', fillOpacity: 0.2, weight: 2 }}
                   />
                 )}
@@ -165,18 +164,26 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
                 <Stack spacing={2}>
                   <FormControl>
                     <FormLabel fontWeight="bold" fontSize={{ base: "xs", md: "sm" }}>Search Radius (miles)</FormLabel>
-                    <Input
-                      type="number"
+                    <NumberInput
                       value={radius}
                       onChange={handleRadiusChange}
+                      min={0}
+                      precision={2}
+                      step={0.1}
                       size="sm"
                       width="100%"
-                      placeholder="Enter radius"
                       borderColor="gray.300"
                       _hover={{ borderColor: "gray.400" }}
                       _focus={{ borderColor: "black", boxShadow: "0 0 0 1px black" }}
                       borderRadius="md"
-                    />
+                      clampValueOnBlur={false}  // Allow users to clear the input
+                    >
+                      <NumberInputField />
+                      <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                      </NumberInputStepper>
+                    </NumberInput>
                   </FormControl>
                 </Stack>
               </Box>
@@ -207,32 +214,16 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
                   </Button>
                 </VStack>
                 {fetchingLocation && (
-                  <Box mt={4} display="flex" flexDirection="column" alignItems="center">
-                    <Spinner size="lg" color="gray.500" mb={2} />
-                    <Text>Detecting location...</Text>
+                  <Box mt={4} display="flex" justifyContent="center" alignItems="center">
+                    <Spinner size="md" />
                   </Box>
                 )}
               </Box>
             </Flex>
           )}
-
-          {showMap && (
-            <Box
-              position="absolute"
-              bottom={2}
-              left={2}
-              zIndex={1000}
-              p={2}
-              bg="white"
-              borderRadius="md"
-              shadow="md"
-              fontSize={{ base: "xs", md: "sm" }}
-            >
-              <Text fontWeight="bold">{isMobile ? "Tap" : "Click"} on the map to change the search radius</Text>
-            </Box>
-          )}
         </Box>
-        
+
+        {/* Right Sidebar */}
         <Box
           h={{ base: 'calc(50% + 1rem)', md: '100%' }}
           w={{ base: '100%', md: '40%' }}
@@ -287,3 +278,4 @@ const LocationMap: React.FC<LocationMapProps> = ({ feedData }) => {
 };
 
 export default LocationMap;
+
