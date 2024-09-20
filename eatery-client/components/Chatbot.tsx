@@ -96,19 +96,19 @@ const Chatbot: React.FC = () => {
         bg="transparent"
         w="100%"
         h="100%"
-        p={4}
+        p={0}
         display="flex"
         flexDirection="column"
         justifyContent="flex-end"
       >
         {/* Chat Messages */}
         <VStack
-          spacing={4}
+          spacing={2}
           align="stretch"
           overflowY="auto"
           flexGrow={1}
-          p={4}
-          mb={4}
+          p={2}
+          mb={0}
         >
           {messages.map((message) => (
             <ScaleFade key={message.id} initialScale={0.9} in>
@@ -144,7 +144,7 @@ const Chatbot: React.FC = () => {
         </VStack>
 
         {/* Input Box */}
-        <Flex as="form" onSubmit={(e) => e.preventDefault()} w="100%">
+        <Flex pb={4} pl={4} pr={4}  as="form" onSubmit={(e) => e.preventDefault()} w="100%">
           <Textarea
             placeholder="Type your message..."
             value={inputValue}

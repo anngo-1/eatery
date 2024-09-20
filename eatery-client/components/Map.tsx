@@ -1,10 +1,11 @@
 // components/Map.tsx
 'use client';
 import React, { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
 import { Box, Button, Spinner, Text, VStack, Flex, Input, Stack, FormControl, FormLabel } from '@chakra-ui/react';
 import { MapContainer, TileLayer, Circle, useMap } from 'react-leaflet';
 import L from 'leaflet';
+import { Icon } from '@chakra-ui/react';
+import { FaMapMarkerAlt } from 'react-icons/fa';
 
 import 'leaflet/dist/leaflet.css';
 
@@ -12,7 +13,7 @@ interface MapProps {
   position: { lat: number; lng: number } | null;
   setPosition: (position: { lat: number; lng: number }) => void;
   radius: number;
-  handleRadiusChange: (radius: number) => void; // Accept a number directly
+  handleRadiusChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleInitializeMap: () => void;
   handleManualMode: () => void;
   showMap: boolean;
@@ -26,11 +27,9 @@ function MapEvents({ setPosition }: { setPosition: (latlng: L.LatLng) => void })
 
   useEffect(() => {
     if (!map) return;
-
     const handleClick = (e: L.LeafletMouseEvent) => {
       setPosition(e.latlng);
     };
-
     map.on('click', handleClick);
 
     return () => {
@@ -42,12 +41,17 @@ function MapEvents({ setPosition }: { setPosition: (latlng: L.LatLng) => void })
 }
 
 const Map: React.FC<MapProps> = ({
-  position, setPosition, radius, handleRadiusChange,
-  handleInitializeMap, handleManualMode, showMap,
-  fetchingLocation
+  position,
+  setPosition,
+  radius,
+  handleRadiusChange,
+  handleInitializeMap,
+  handleManualMode,
+  showMap,
+  fetchingLocation,
 }) => {
   const [loading, setLoading] = useState(true);
-  const [zoomLevel, setZoomLevel] = useState(13); // Default zoom level
+  const [zoomLevel, setZoomLevel] = useState(13);
   const [radiusInput, setRadiusInput] = useState(radius === 0 ? '' : radius.toString());
 
   const center: L.LatLngExpression = position ? [position.lat, position.lng] : [51.505, -0.09];
@@ -58,32 +62,56 @@ const Map: React.FC<MapProps> = ({
     }
   }, [zoomLevel]);
 
-  const onRadiusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setRadiusInput(value);
 
-    // Update radius, ensuring it's a number or default to 0 if empty
-    const newRadius = value === '' ? 0 : Math.max(0, parseFloat(value));
-    handleRadiusChange(newRadius); // Pass the number directly
-  };
+const onRadiusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const value = event.target.value;
+  setRadiusInput(value);
 
+  const newRadius = value === '' ? 0 : Math.max(0, parseFloat(value));
+
+  const syntheticEvent = {
+    target: {
+      value: newRadius.toString(), // Ensure this is a string
+    },
+  } as React.ChangeEvent<HTMLInputElement>;
+
+  handleRadiusChange(syntheticEvent);
+};
   useEffect(() => {
     setRadiusInput(radius === 0 ? '' : radius.toString());
-  }, [radius]);
-
-  if (!showMap) {
+  }, [radius]);  if (!showMap) {
     return (
-      <Flex justifyContent="center" alignItems="center" height="100%" bg="gray.100">
-        <Box p={6} bg="white" borderRadius="lg" shadow="xl" textAlign="center">
-          <Text fontSize="xl" fontWeight="bold" mb={4}>Initialize Location</Text>
-          <VStack spacing={4}>
-            <Button colorScheme="blackAlpha" onClick={handleInitializeMap}>Auto-detect Location</Button>
-            <Button variant="outline" colorScheme="blackAlpha" onClick={() => { handleManualMode(); setZoomLevel(5); }}>Pick Manually</Button>
-          </VStack>
-          {fetchingLocation && <Spinner mt={4} color="black" />}
-        </Box>
-      </Flex>
-    );
+      <Flex justifyContent="center" alignItems="center" height="100%" bg="gray.50">
+      <Box p={6} bg="white" borderRadius="lg" shadow="xl" width="90%" maxWidth="400px" textAlign="center">
+        <Icon as={FaMapMarkerAlt} w={12} h={12} color="gray.600" mb={4} />
+        <Text fontSize="xl" fontWeight="bold" mb={4}>Initialize Location</Text>
+        <VStack spacing={4}>
+          <Button
+            colorScheme="gray"
+            onClick={handleInitializeMap}
+            width="100%"
+            leftIcon={<Icon as={FaMapMarkerAlt} />}
+            borderRadius="md"
+          >
+            Auto-detect Location
+          </Button>
+          <Button
+            colorScheme="gray"
+            variant="outline"
+            onClick={() => { handleManualMode(); setZoomLevel(5); }}
+            width="100%"
+            borderRadius="md"
+          >
+            Pick Manually
+          </Button>
+        </VStack>
+        {fetchingLocation && (
+          <Box mt={4} display="flex" justifyContent="center" alignItems="center">
+            <Spinner size="md" />
+          </Box>
+        )}
+      </Box>
+    </Flex>    );
   }
 
   return (
@@ -97,7 +125,6 @@ const Map: React.FC<MapProps> = ({
         center={center}
         zoom={zoomLevel}
         style={{ height: '100%', width: '100%' }}
-        whenCreated={mapInstance => setZoomLevel(mapInstance.getZoom())}
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -127,11 +154,11 @@ const Map: React.FC<MapProps> = ({
           <FormControl>
             <FormLabel fontSize="sm">Search Radius (miles)</FormLabel>
             <Input 
-              type="text" // Allow empty input
-              value={radiusInput} 
-              onChange={onRadiusChange} 
-              size="sm" 
-              pattern="[0-9]*\.?[0-9]*" // Restrict input to numbers and period
+              type="text"
+              value={radiusInput}
+              onChange={onRadiusChange}
+              size="sm"
+              pattern="[0-9]*\.?[0-9]*"
             />
           </FormControl>
         </Stack>
