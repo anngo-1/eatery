@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import Feed from './Feed';
 import Chatbot from './Chatbot';
 import { FeedItemData } from './FeedItem';
-
+import { ChatbotProps } from './Chatbot'
 const Map = dynamic(() => import('./Map'), { ssr: false });
 
 interface MapFeedProps {
@@ -19,7 +19,6 @@ const MapFeed: React.FC<MapFeedProps> = ({ feedData }) => {
   const [showMap, setShowMap] = useState<boolean>(false);
   const [fetchingLocation, setFetchingLocation] = useState<boolean>(false);
 
-  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const handleRadiusChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -28,14 +27,6 @@ const MapFeed: React.FC<MapFeedProps> = ({ feedData }) => {
       setRadius(parsedValue);
     }
   }, []);
-
-  const incrementRadius = () => {
-    setRadius(prevRadius => prevRadius + 1);
-  };
-
-  const decrementRadius = () => {
-    setRadius(prevRadius => Math.max(1, prevRadius - 1));
-  };
 
   const handleInitializeMap = () => {
     setFetchingLocation(true);
@@ -110,7 +101,7 @@ const MapFeed: React.FC<MapFeedProps> = ({ feedData }) => {
             <TabPanels flex="1" overflowY="auto">
               <TabPanel height="100%" p={0}>
                 <Box h="100%" overflowY="auto">
-                  <Chatbot />
+                  <Chatbot position={position} feed={feedData} radius={radius} />
                 </Box>
               </TabPanel>
               <TabPanel height="100%" p={0}>

@@ -11,6 +11,7 @@ import {
   Textarea,
 } from "@chakra-ui/react";
 import { FiSend } from "react-icons/fi";
+import { FeedItemData } from './FeedItem'
 
 type Message = {
   id: number;
@@ -18,7 +19,12 @@ type Message = {
   text: string;
 };
 
-const Chatbot: React.FC = () => {
+export interface ChatbotProps {
+  position: { lat: number; lng: number } | null;
+  radius: number;
+  feed: FeedItemData[]
+}
+const Chatbot: React.FC<ChatbotProps> = ({ position, radius, feed }) => {
   const [messages, setMessages] = useState<Message[]>
   ([
     {
@@ -107,7 +113,7 @@ const Chatbot: React.FC = () => {
           align="stretch"
           overflowY="auto"
           flexGrow={1}
-          p={2}
+          p={4}
           mb={0}
         >
           {messages.map((message) => (
