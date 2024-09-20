@@ -1,5 +1,4 @@
 'use client'
-
 import {
   ChakraProvider,
   Box,
@@ -23,9 +22,9 @@ export default function Nav() {
         alignItems={'center'}
         justifyContent={'space-between'}
         position='fixed'
-        top={0} // Position it at the top
-        width='100%' // Ensure it spans the full width of the viewport
-        zIndex={1000} // Ensure it stays above other content
+        top={0} 
+        width='100%' 
+        zIndex={1000} 
 
       >
             <p className="text-2xl">eatery</p>

@@ -3,12 +3,10 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   Box,
   Flex,
-  Input,
   Text,
   VStack,
   Avatar,
   IconButton,
-  useColorModeValue,
   ScaleFade,
   Textarea,
 } from "@chakra-ui/react";

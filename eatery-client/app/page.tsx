@@ -1,16 +1,12 @@
 import { Box, ChakraProvider, Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
-import Chatbot from '../components/chatbot';
-import Nav from '../components/navbar';
-import Feed from '../components/feed'; // Adjust the path as needed
-import { FeedItemData } from '../components/main';
-import LocationMap from '../components/main';
-// Sample feed data
+import Nav from '../components/Navbar';
+import { FeedItemData } from '../components/FeedItem';
+import MapFeed from '../components/MapFeed';
 const feedData: FeedItemData[] = [
   { id: 1, title: 'Cafe Delight', description: 'Best coffee in town', image: '/coffee.jpg', rating: 4.8 },
   { id: 2, title: 'Pizza House', description: 'Delicious pizza with fresh ingredients', image: '/pizza.jpg', rating: 4.5 },
   { id: 3, title: 'Burger Stop', description: 'Juicy burgers at affordable prices', image: '/burger.jpg', rating: 4.7 },
   { id: 4, title: 'Sushi Place', description: 'Fresh sushi rolls and more', image: '/sushi.jpg', rating: 4.9 },
-  // Add more items to test scrolling
 ];
 export default function Home() {
   return (
@@ -25,7 +21,7 @@ export default function Home() {
         display="flex"
         flexDirection="column"
       >
-               <LocationMap feedData={feedData}/>
+               <MapFeed feedData={feedData}/>
       </Box>
     </ChakraProvider>
   );
