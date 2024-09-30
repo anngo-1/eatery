@@ -150,6 +150,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ position, radius, feed }) => {
           spacing={2}
           align="stretch"
           overflowY="auto"
+          overflowX="hidden"
           flexGrow={1}
           p={4}
           mb={0}
