@@ -101,7 +101,11 @@ const MapFeed: React.FC<MapFeedProps> = ({ feedData }) => {
             <TabPanels flex="1" overflowY="auto">
               <TabPanel height="100%" p={0}>
                 <Box h="100%" overflowY="auto">
-                  <Chatbot position={position} feed={feedData} radius={radius} />
+                <Chatbot 
+                  position={position ?? { lat: 0, lng: 0 }} 
+                  feed={feedData} 
+                  radius={radius} 
+                />
                 </Box>
               </TabPanel>
               <TabPanel height="100%" p={0}>

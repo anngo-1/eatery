@@ -8,10 +8,12 @@ import {
   Avatar,
   IconButton,
   ScaleFade,
+  Spinner,
   Textarea,
 } from "@chakra-ui/react";
 import { FiSend } from "react-icons/fi";
 import { FeedItemData } from './FeedItem'
+import Markdown from 'react-markdown'
 
 type Message = {
   id: number;
@@ -20,29 +22,30 @@ type Message = {
 };
 
 export interface ChatbotProps {
-  position: { lat: number; lng: number } | null;
+  position: { lat: number; lng: number };
   radius: number;
   feed: FeedItemData[]
 }
 const Chatbot: React.FC<ChatbotProps> = ({ position, radius, feed }) => {
-  const [messages, setMessages] = useState<Message[]>
-  ([
+
+  const starter_message : Message[] = ([
     {
       id: 0,
       sender: "bot",
-      text: `Hi! I’m Riku! I'm here to help you find some great food.\nLet's get started by autodetecting your location and setting a search radius by clicking on the map (you can move it anytime!). If that doesn’t work, just manually select your spot!`
+      text: `Hi! I’m Riku! I'm here to help you find some great food.\nLet's get started by autodetecting your location and setting a search radius by clicking on the map (you can move it anytime!). If that doesn’t work, just manually select your spot! \nIf you want to restart our conversation, just type \"restart\" and nothing else!`
     },
 
     {
       id: 1,
-      sender:"bot",
-      text: "Let me know what you're looking for in terms of food, and I'll put those locations on your map and feed!"
-
-    }
+      sender: "bot",
+      text: `What type of food are you craving today? Or, if you're not sure, do you have any dietary preferences or restrictions I should know about?`
+    },
 
   ]); 
+  const [messages, setMessages] = useState<Message[]>(starter_message);
   const [inputValue, setInputValue] = useState<string>("");
-
+  const [thinking, setThinking] = useState<Boolean>(false); // State for loading spinner
+  
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -58,28 +61,63 @@ const Chatbot: React.FC<ChatbotProps> = ({ position, radius, feed }) => {
       text: inputValue,
     };
 
-    setMessages((prevMessages) => [...prevMessages, userMessage]);
-    setInputValue(""); // Clear input after sending
+    if (userMessage.text == "restart") {
+      setMessages((prevMessages) => [...prevMessages, userMessage]);
+      setInputValue("");
+      fetch("http://localhost:8000/reset_chat");
+      setMessages(starter_message);
+    } else {
+      setMessages((prevMessages) => [...prevMessages, userMessage]);
+      setInputValue(""); // Clear input after sending
 
-    const botResponseText = await getBotResponse(userMessage.text);
+      // Start spinner when the bot starts thinking
+      setThinking(true);
 
-    const botMessage: Message = {
-      id: messages.length + 2,
-      sender: "bot",
-      text: botResponseText,
-    };
+      if (position == null) {
+        position = { lat: 0, lng: 0 };
+      }
 
-    setMessages((prevMessages) => [...prevMessages, botMessage]);
+      const botResponseText = await getBotResponse(
+        `PARAMETERS:\n LATITUDE:${position['lat']} LONGITUDE:${position['lng']} RADIUS:${radius*1609.34}` +
+        "\n" +
+        userMessage.text
+      );
+
+      console.log(botResponseText);
+      const botMessage: Message = {
+        id: messages.length + 2,
+        sender: "bot",
+        text: botResponseText,
+      };
+
+      // Stop spinner once bot's response is received
+      setThinking(false);
+      setMessages((prevMessages) => [...prevMessages, botMessage]);
+    }
   };
 
-  // Placeholder function for API call to get the bot response
   const getBotResponse = async (userInput: string): Promise<string> => {
-    // Simulate API call or logic to fetch bot response
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve("This is a bot response to: " + userInput);
-      }, 1000); // Simulated delay
+    const response = await fetch('http://localhost:8000/chat', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ message: userInput }),
     });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    // Extract the assistant's response from the response JSON
+    const assistantResponse = data.messages[data.messages.length - 1];
+
+    if (!assistantResponse || !assistantResponse.content) {
+      throw new Error('No valid assistant response received');
+    }
+
+    return assistantResponse.content;
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -126,7 +164,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ position, radius, feed }) => {
                 {message.sender === "bot" && (
                   <Avatar src='rikuicon.jpg' size="sm" name="Bot" bg="gray.600" mr={2} />
                 )}
-                <Box
+                <Box 
                   bg={message.sender === "user" ? "gray.700" : "gray.200"}
                   color={message.sender === "user" ? "white" : "black"}
                   px={4}
@@ -138,7 +176,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ position, radius, feed }) => {
                   borderWidth="1px"
                   borderColor={message.sender === "user" ? "gray.500" : "gray.300"} // Subtle border
                 >
-                  <Text whiteSpace="pre-wrap">{message.text}</Text>
+                  <Markdown>{message.text}</Markdown>
                 </Box>
                 {message.sender === "user" && (
                   <Avatar size="sm" name="User" bg="gray.600" ml={2} />
@@ -146,6 +184,15 @@ const Chatbot: React.FC<ChatbotProps> = ({ position, radius, feed }) => {
               </Flex>
             </ScaleFade>
           ))}
+
+          {/* Spinner for when the bot is thinking */}
+          {thinking && (
+            <Flex align="center" justify="flex-start" ml = {4} w="100%">
+              <Spinner size="sm" color="gray.500" />                  
+              <Text ml={2} color="gray.500">Riku is thinking...</Text>
+            </Flex>
+          )}
+          
           <div ref={messagesEndRef} />
         </VStack>
 

@@ -9,7 +9,7 @@ export const chat = async (log: any) => {
   const functions = [
     {
       name: 'searchPlaces', // The name of the function
-      description: 'Search for nearby places based on coordinates, a radius, and max number of results to return. THE USER MUST SUPPLY ALL OF THEM TO CALL THE FUNCTION..',
+      description: 'Search for nearby restaurants/food places based on coordinates and a radius. If the user has a latitude and longitude of 0, this means their location is not set, so prompt them to set their location using the map.         ',
       parameters: {
         type: 'object',
         properties: {
@@ -20,17 +20,18 @@ export const chat = async (log: any) => {
           },
           radius: {
             type: 'number',
-            description: 'Radius in meters',
+            description: 'Radius',
           },
-          max_results: {
-            type: 'number',
-            description: 'Maximum number of results',
-          },
+          // max_results: {
+          //   type: 'number',
+          //   description: 'Maximum number of results',
+          // },
         },
-        required: ['coordinates', 'radius', 'max_results'],
+        required: ['coordinates', 'radius'],
       },
     },
   ];
+
 
   const response = await openai.chat.completions.create({
     model: "gpt-4o-mini",
@@ -47,15 +48,16 @@ export const chat = async (log: any) => {
     },
   });
 
-  if (response.choices && response.choices[0].message.function_call) {
+  if (response.choices && response.choices[0].message.function_call) {  
     const functionName = response.choices[0].message.function_call.name;
     const functionParams = JSON.parse(response.choices[0].message.function_call.arguments);
 
     if (functionName === 'searchPlaces') {
+      console.log(functionParams)
       const searchResults = await searchPlaces(
         functionParams.coordinates,
         functionParams.radius,
-        functionParams.max_results
+        15
       );
 
       console.log(JSON.stringify(searchResults))
