@@ -14,8 +14,8 @@ export const searchPlaces = async (coordinates : Number[], radius: Number, max_r
   locationRestriction: {
     "circle": {
       "center": {
-        "latitude": coordinates[1], // 37.7937
-        "longitude": coordinates[0]}, //-122.3965
+        "latitude": coordinates[0], // 37.7937
+        "longitude": coordinates[1]}, //-122.3965
       "radius": radius
     }
   }
