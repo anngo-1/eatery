@@ -5,6 +5,7 @@ eatery is a chatbot that helps you decide what food to order.
 
 ## TO DO:
 
+- Fix input field lag after a couple of messages
 - Fix chatbot thinking expanding the chatbot screen width to a scroll
 - Implement chatbot search to feed
 - Implement feed connection to map marker
