@@ -17,6 +17,7 @@
     "dotenv": "^16.4.5",
     "framer-motion": "^11.3.31",
     "leaflet": "^1.9.4",
+    "lodash": "^4.17.21",
     "next": "^14.2.12",
     "react": "^18",
     "react-dom": "^18",
