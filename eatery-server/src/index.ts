@@ -66,6 +66,9 @@ app.get("/reset_chat", async (req: Request, res:Response) => {
 app.post("/chat", async (req: Request, res: Response) => {
   // console.log(req.body); // For debugging
     const userMessage = req.body.message;
+    const longitude = req.body.longitude;
+    const latitude = req.body.latitude;
+    
     console.log(userMessage)
 
     if (!userMessage) {
@@ -75,7 +78,7 @@ app.post("/chat", async (req: Request, res: Response) => {
     messages.push({ role: "user", content: userMessage });
 
   try {
-    const response = await chat(messages);
+    const response = await chat(messages, longitude, latitude);
     console.log(response.choices[0].message.content)
     const assistantMessage = response.choices[0].message.content ?? "Sorry, I cannot help you with that";
 
