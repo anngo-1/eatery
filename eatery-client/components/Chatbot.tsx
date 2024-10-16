@@ -59,7 +59,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ position, radius, feed }) => {
         `PARAMETERS:\n LATITUDE:${position.lat} LONGITUDE:${position.lng} RADIUS:${radius * 1609.34}` +
         "\n" +
         userMessage.text
-      );
+      );      
 
       const botMessage: Message = {
         id: messages.length + 2,
@@ -78,7 +78,9 @@ const Chatbot: React.FC<ChatbotProps> = ({ position, radius, feed }) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message: userInput, longitude: position.lat, latitude: position.lng,  }),
+
+      body: JSON.stringify({ message: userInput, longitude: position.lng, latitude: position.lat, radius: (radius * 1609.34)  }),
+
     });
 
     if (!response.ok) {
