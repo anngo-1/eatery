@@ -38,7 +38,7 @@ app.get("/searchplaces", async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Invalid query parameters" });
     }
 
-    const search_result = await searchPlaces([latitude, longitude], radius, max_results);
+    const search_result = await searchPlaces([longitude, latitude], radius, max_results);
     res.status(200).json({ msg: "Successful API call.", result: search_result });
   } catch (error) {
     console.error(error);
@@ -68,8 +68,7 @@ app.post("/chat", async (req: Request, res: Response) => {
     const userMessage = req.body.message;
     const longitude = req.body.longitude;
     const latitude = req.body.latitude;
-    
-    console.log(userMessage)
+    const radius = req.body.radius;
 
     if (!userMessage) {
       return res.status(400).json({ error: "Message parameter is required" });
@@ -78,7 +77,7 @@ app.post("/chat", async (req: Request, res: Response) => {
     messages.push({ role: "user", content: userMessage });
 
   try {
-    const response = await chat(messages, longitude, latitude);
+    const response = await chat(messages, longitude, latitude, radius);
     console.log(response.choices[0].message.content)
     const assistantMessage = response.choices[0].message.content ?? "Sorry, I cannot help you with that";
 
