@@ -11,11 +11,11 @@ export const searchPlaces = async (coordinates : Number[], radius: Number, max_r
   const data = {
   includedTypes: ["restaurant"],
   maxResultCount: max_results,
-  locationRestriction: {
+  locationRestriction:{
     "circle": {
       "center": {
-        "latitude": coordinates[0], // 37.7937
-        "longitude": coordinates[1]}, //-122.3965
+        "latitude": coordinates[1], // 37.7937
+        "longitude": coordinates[0]}, //-122.3965
       "radius": radius
     }
   }
@@ -30,6 +30,10 @@ export const searchPlaces = async (coordinates : Number[], radius: Number, max_r
   try {
     const response = await fetch(url, options);
     const json = await response.json();
+    console.log(json) 
+
+
+
     return json;
   } catch (error) {
     console.error(error);

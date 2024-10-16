@@ -1,7 +1,7 @@
 import OpenAI from "openai";
 import { searchPlaces } from './search.js'; // Adjust the import path as necessary
 
-export const chat = async (log: any, longitude: Number, latitude: Number) => {
+export const chat = async (log: any, longitude: Number, latitude: Number, radius: Number) => {
   const openai = new OpenAI({
     apiKey: process.env.OPENAIAPIKEY,
   });
@@ -50,13 +50,14 @@ export const chat = async (log: any, longitude: Number, latitude: Number) => {
 
   if (response.choices && response.choices[0].message.function_call) {  
     const functionName = response.choices[0].message.function_call.name;
-    const functionParams = JSON.parse(response.choices[0].message.function_call.arguments);
+    //const functionParams = JSON.parse(response.choices[0].message.function_call.arguments);
 
     if (functionName === 'searchPlaces') {
-      console.log(functionParams)
+     console.log(longitude)
+      console.log(latitude)
       const searchResults = await searchPlaces(
         [longitude, latitude],
-        functionParams.radius,
+        radius,
         15
       );
 
