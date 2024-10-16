@@ -17,6 +17,8 @@ export interface ChatbotProps {
   feed: FeedItemData[];
 }
 
+
+
 const Chatbot: React.FC<ChatbotProps> = ({ position, radius, feed }) => {
   const starter_message: Message[] = [
     {
@@ -30,7 +32,6 @@ const Chatbot: React.FC<ChatbotProps> = ({ position, radius, feed }) => {
       text: `What type of food are you craving today? Or, if you're not sure, do you have any dietary preferences or restrictions I should know about?`,
     },
   ];
-
   const [messages, setMessages] = useState<Message[]>(starter_message);
   const [thinking, setThinking] = useState<boolean>(false); // State for loading spinner
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
@@ -77,7 +78,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ position, radius, feed }) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message: userInput }),
+      body: JSON.stringify({ message: userInput, longitude: position.lat, latitude: position.lng,  }),
     });
 
     if (!response.ok) {
@@ -116,7 +117,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ position, radius, feed }) => {
         )}
 
         {/* Input Box */}
-        <MessageInput handleSendMessage={handleSendMessage} />
+        <MessageInput handleSendMessage={handleSendMessage} setMessage={setMessages}/>
       </Box>
     </Flex>
   );
