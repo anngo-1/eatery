@@ -175,7 +175,7 @@ const onRadiusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
           shadow="md"
         >
           <Text fontSize="sm" fontWeight="bold">
-            Lat: {position.lat.toFixed(4)}, Lng: {position.lng.toFixed(4)}
+            Lng: {position.lng.toFixed(4)}, Lat: {position.lat.toFixed(4)}
           </Text>
         </Box>
       )}
