@@ -94,7 +94,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ handleSendMessage, setMessa
       </InputGroup>
       <Flex alignItems={'center'}>
           <Button  bg='white' onClick={onOpen} _hover={{ bg: "white" }}>
-            <Icon as={SettingsIcon} boxSize={6} />
+            <Icon as={SettingsIcon} boxSize={5} />
           </Button>
 
           <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
