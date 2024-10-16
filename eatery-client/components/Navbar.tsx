@@ -55,31 +55,7 @@ export default function Nav() {
 
       >
         <p className="text-2xl">eatery</p>
-        <Flex alignItems={'center'}>
-          <Button colorScheme='gray' onClick={onOpen}>
-            <Icon as={SettingsIcon} boxSize={6} />
-          </Button>
-
-          <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
-            <ModalOverlay />
-            <ModalContent>
-              <ModalHeader>Settings</ModalHeader>
-              <ModalCloseButton />
-              <ModalBody borderRadius='xl' pb={1}>
-                <Button bg='red.500' mr={3} onClick={reset_chat}>
-                  Reset Chat
-                </Button>
-              </ModalBody>
-
-              <ModalFooter>
-                <Button colorScheme='gray' mr={3} onClick={onClose}>
-                  Close
-                </Button>
-              </ModalFooter>
-            </ModalContent>
-          </Modal>
-
-        </Flex>
+        
       </Flex>
     </ChakraProvider>
   )
