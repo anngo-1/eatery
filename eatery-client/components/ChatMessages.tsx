@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from "react";
-import { VStack, Flex, Avatar, Box, ScaleFade } from "@chakra-ui/react";
-import Markdown from 'react-markdown';
+import { VStack, Flex, Avatar, Box, ScaleFade, Link as ChakraLink } from "@chakra-ui/react"; // Import Chakra's Link component
+import ReactMarkdown from 'react-markdown';
+import rehypeRaw from 'rehype-raw';
 import { Message } from './Chatbot';
 
 interface ChatMessagesProps {
@@ -45,9 +46,26 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, messagesEndRef, t
               fontSize="md"
               boxShadow="sm"
               borderWidth="1px"
-              borderColor={message.sender === "user" ? "gray.500" : "gray.300"} // Subtle border
+              borderColor={message.sender === "user" ? "gray.500" : "gray.300"}
             >
-              <Markdown>{message.text}</Markdown>
+              <ReactMarkdown 
+                rehypePlugins={[rehypeRaw]} 
+                components={{
+                  a: ({href, children}) => (
+                    <ChakraLink
+                      href={href}
+                      color="blue"
+                      textDecoration="underline"
+                      _hover={{ color: "darkblue" }}
+                      isExternal
+                    >
+                      {children}
+                    </ChakraLink>
+                  ),
+                }}
+              >
+                {message.text}
+              </ReactMarkdown>
             </Box>
             {message.sender === "user" && (
               <Avatar size="sm" name="User" bg="gray.600" ml={2} />
@@ -63,4 +81,3 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ messages, messagesEndRef, t
 };
 
 export default ChatMessages;
-

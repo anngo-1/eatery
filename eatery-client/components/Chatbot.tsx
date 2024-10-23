@@ -4,6 +4,7 @@ import { Flex, Box, Spinner, Text } from "@chakra-ui/react";
 import ChatMessages from './ChatMessages';
 import MessageInput from './MessageInput';
 import { FeedItemData } from './FeedItem';
+import { FeedMap } from "@/app/page";
 
 export type Message = {
   id: number;
@@ -14,7 +15,7 @@ export type Message = {
 export interface ChatbotProps {
   position: { lat: number; lng: number };
   radius: number;
-  feed: FeedItemData[];
+  feed: FeedMap;
 }
 
 
@@ -88,6 +89,8 @@ const Chatbot: React.FC<ChatbotProps> = ({ position, radius, feed }) => {
     }
 
     const data = await response.json();
+    console.log(data)
+
     const assistantResponse = data.messages[data.messages.length - 1];
 
     if (!assistantResponse || !assistantResponse.content) {
@@ -97,6 +100,9 @@ const Chatbot: React.FC<ChatbotProps> = ({ position, radius, feed }) => {
     return assistantResponse.content;
   };
 
+  const updateFeed = (feedData : JSON) => {
+    // TO DO: Write code to update the actual feed
+  }
   return (
     <Flex overflowX='hidden'direction="column" align="center" justify="center" w="100%" h="100%" bg="transparent">
       <Box

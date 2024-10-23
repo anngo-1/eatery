@@ -6,11 +6,12 @@ import dynamic from 'next/dynamic';
 import Feed from './Feed';
 import Chatbot from './Chatbot';
 import { FeedItemData } from './FeedItem';
+import { FeedMap } from '@/app/page';
 import { ChatbotProps } from './Chatbot'
 const Map = dynamic(() => import('./Map'), { ssr: false });
 
 interface MapFeedProps {
-  feedData: FeedItemData[];
+  feedData: FeedMap;
 }
 
 const MapFeed: React.FC<MapFeedProps> = ({ feedData }) => {

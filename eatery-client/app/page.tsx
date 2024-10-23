@@ -2,12 +2,22 @@ import { Box, ChakraProvider, Tabs, TabList, TabPanels, Tab, TabPanel } from '@c
 import Nav from '../components/Navbar';
 import { FeedItemData } from '../components/FeedItem';
 import MapFeed from '../components/MapFeed';
+
 const feedData: FeedItemData[] = [
   { id: 1, title: 'Cafe Delight', description: 'Best coffee in town', image: '/coffee.jpg', rating: 4.8 },
   { id: 2, title: 'Pizza House', description: 'Delicious pizza with fresh ingredients', image: '/pizza.jpg', rating: 4.5 },
   { id: 3, title: 'Burger Stop', description: 'Juicy burgers at affordable prices', image: '/burger.jpg', rating: 4.7 },
   { id: 4, title: 'Sushi Place', description: 'Fresh sushi rolls and more', image: '/sushi.jpg', rating: 4.9 },
 ];
+
+export type FeedMap = { [key: string]: FeedItemData };
+
+
+const feedMap: FeedMap = feedData.reduce((map: FeedMap, item: FeedItemData) => {
+  map[item.title] = item;
+  return map;
+}, {});
+
 export default function Home() {
   return (
     <ChakraProvider>
@@ -21,7 +31,7 @@ export default function Home() {
         display="flex"
         flexDirection="column"
       >
-               <MapFeed feedData={feedData}/>
+               <MapFeed feedData={feedMap}/>
       </Box>
     </ChakraProvider>
   );
