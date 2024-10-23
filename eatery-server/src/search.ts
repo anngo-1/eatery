@@ -5,7 +5,7 @@ export const searchPlaces = async (coordinates : Number[], radius: Number, max_r
   const headers = {
     'Content-Type': 'application/json',
     'X-Goog-Api-Key': API_KEY || 'FAIL',
-    'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.priceLevel,places.editorialSummary'
+    'X-Goog-FieldMask': 'places.displayName,places.formattedAddress,places.priceLevel,places.editorialSummary,places.websiteUri,places.rating,places.userRatingCount'
   };
 
   const data = {

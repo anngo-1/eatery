@@ -85,9 +85,9 @@ export const chat = async (log: any, longitude: Number, latitude: Number, radius
           "type": "text"
         },
       });
-      return finalResponse;
+      return { response : finalResponse, search_results : searchResults};
     }
   }
 
-  return response;
+  return { response : response, search_results : {}};
 }

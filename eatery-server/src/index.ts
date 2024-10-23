@@ -4,11 +4,18 @@ import { chat } from "./chat.js";
 import { searchPlaces } from "./search.js";
 const app = express();
 const port = process.env.PORT || 8000;
-
-let messages = [
+const message_template = [
   {role: "system", content: `
     You are a helpful food assistant who will help the user figure out what they want to eat. The user will preface
-    their message with the their location, along with search radius. If the longitude, and latitude are both 0 then the user has not set their location and you will prompt them to please set their location and radius using the map. \n\n You will ask questions one by one to the user to ascertain their interest in food.` },
+    their message with the their location, along with search radius. If the longitude, and latitude are both 0 then the user has not set their location and you will prompt them to please set their location and radius using the map. \n\n You will ask questions one by one to the user to ascertain their interest in food.
+    
+    GENERAL RESPONSE INSTRUCTIONS:
+    - FOR EACH PLACE, INCLUDE ITS LINK. IF ITS LINK IS NOT VALID, THEN DONT INCLUDE IT.
+    - Avoid using long lists that make the user think "I ain't reading all that"
+    - Be short and concise
+    - After every search result, make sure the user knows that your search results will be added to their feed and map
+    - The maximum items you can search for is twenty
+    ` },
   
   {role: "assistant", content: `Hi! I’m Riku! I'm here to help you find some great food.\n
     Let's get started by autodetecting your location and setting a search radius by clicking on the map 
@@ -19,6 +26,7 @@ let messages = [
 
 
 ];
+let messages = message_template
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -46,20 +54,7 @@ app.get("/searchplaces", async (req: Request, res: Response) => {
   }
 });
 app.get("/reset_chat", async (req: Request, res:Response) => {
-  messages = [
-    {role: "system", content: `
-      You are a helpful food assistant who will help the user figure out what they want to eat. The user will preface
-      their message with the their location, along with search radius. If the longitude, and latitude are both 0 then the user has not set their location and you will prompt them to please set their location and radius using the map. \n\n You will ask questions one by one to the user to ascertain their interest in food. You will avoid using huge verbose lists, small lists are okay.` },
-    
-    {role: "assistant", content: `Hi! I’m Riku! I'm here to help you find some great food.\n
-      Let's get started by autodetecting your location and setting a search radius by clicking on the map 
-      (you can move it anytime!). If that doesn’t work, just manually select your spot!`},
-  
-      {role: "assistant", content: `What type of food are you craving today? Or, if you're not sure, do you have any dietary preferences or restrictions I should know about?
-  `},
-  
-  
-  ];          
+  messages = message_template   
   res.status(200).json({ "msg": "chat reset!"});
 });
 
@@ -77,13 +72,13 @@ app.post("/chat", async (req: Request, res: Response) => {
     messages.push({ role: "user", content: userMessage });
 
   try {
-    const response = await chat(messages, longitude, latitude, radius);
+    const {response, search_results } = await chat(messages, longitude, latitude, radius);
     console.log(response.choices[0].message.content)
     const assistantMessage = response.choices[0].message.content ?? "Sorry, I cannot help you with that";
 
     messages.push({ role: "assistant", content: assistantMessage });
 
-    res.status(200).json({ messages });
+    res.status(200).json({ messages: messages, search_results : search_results  });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "An error occurred during the chat processing." });
