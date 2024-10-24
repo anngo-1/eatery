@@ -12,9 +12,11 @@ const Map = dynamic(() => import('./Map'), { ssr: false });
 
 interface MapFeedProps {
   feedData: FeedMap;
+  addFeed: (newItem: FeedItemData) => void; 
+  setFeed: (newFeed : FeedItemData[]) => void;
 }
 
-const MapFeed: React.FC<MapFeedProps> = ({ feedData }) => {
+const MapFeed: React.FC<MapFeedProps> = ({ feedData, addFeed, setFeed }) => {
   const [position, setPosition] = useState<{ lat: number; lng: number } | null>(null);
   const [radius, setRadius] = useState<number>(1);
   const [showMap, setShowMap] = useState<boolean>(false);
@@ -106,6 +108,8 @@ const MapFeed: React.FC<MapFeedProps> = ({ feedData }) => {
                   position={position ?? { lat: 0, lng: 0 }} 
                   feed={feedData} 
                   radius={radius} 
+                  addFeed={addFeed}
+                  setFeed={setFeed}
                 />
                 </Box>
               </TabPanel>

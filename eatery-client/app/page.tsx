@@ -1,24 +1,27 @@
-import { Box, ChakraProvider, Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
+'use client'
+import { Box, ChakraProvider } from '@chakra-ui/react';
+import { useState } from 'react';
 import Nav from '../components/Navbar';
 import { FeedItemData } from '../components/FeedItem';
 import MapFeed from '../components/MapFeed';
 
-const feedData: FeedItemData[] = [
-  { id: 1, title: 'Cafe Delight', description: 'Best coffee in town', image: '/coffee.jpg', rating: 4.8 },
-  { id: 2, title: 'Pizza House', description: 'Delicious pizza with fresh ingredients', image: '/pizza.jpg', rating: 4.5 },
-  { id: 3, title: 'Burger Stop', description: 'Juicy burgers at affordable prices', image: '/burger.jpg', rating: 4.7 },
-  { id: 4, title: 'Sushi Place', description: 'Fresh sushi rolls and more', image: '/sushi.jpg', rating: 4.9 },
+const initialFeedData: FeedItemData[] = [
 ];
 
 export type FeedMap = { [key: string]: FeedItemData };
 
-
-const feedMap: FeedMap = feedData.reduce((map: FeedMap, item: FeedItemData) => {
-  map[item.title] = item;
-  return map;
-}, {});
-
 export default function Home() {
+  const [feedData, setFeedData] = useState<FeedItemData[]>(initialFeedData);
+
+  const addFeedItem = (newItem: FeedItemData) => {
+    setFeedData((prevFeedData) => [...prevFeedData, newItem]);
+  };
+
+  const feedMap: FeedMap = feedData.reduce((map: FeedMap, item: FeedItemData) => {
+    map[item.name] = item;
+    return map;
+  }, {});
+
   return (
     <ChakraProvider>
       <Nav />
@@ -31,9 +34,10 @@ export default function Home() {
         display="flex"
         flexDirection="column"
       >
-               <MapFeed feedData={feedMap}/>
+        {/* Render MapFeed and pass feedMap */}
+        <MapFeed feedData={feedMap} addFeed={addFeedItem} setFeed = {setFeedData}/>
+
       </Box>
     </ChakraProvider>
   );
 }
-
