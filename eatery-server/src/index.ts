@@ -54,7 +54,7 @@ app.get("/searchplaces", async (req: Request, res: Response) => {
   }
 });
 app.get("/reset_chat", async (req: Request, res:Response) => {
-  messages = message_template   
+  messages = [... message_template]   
   res.status(200).json({ "msg": "chat reset!"});
 });
 
