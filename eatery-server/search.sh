@@ -1,3 +1,5 @@
+# This a search script that uses the new Google Place API's nearby search
+
 # Default coordinates
 DEFAULT_LAT=32.9164
 DEFAULT_LNG=-117.1393
