@@ -19,7 +19,7 @@ make_request() {
     response=$(curl -s -X POST \
         -H "Content-Type: application/json" \
         -H "X-Goog-Api-Key: ${APIKEY}" \
-        -H "X-Goog-FieldMask: places.displayName,places.formattedAddress,places.id,places.rating,nextPageToken" \
+        -H "X-Goog-FieldMask: places.displayName,places.formattedAddress,places.id,places.rating,places.photos,nextPageToken" \
         -d "$data" \
         "${BASE_URL}")
     
@@ -31,7 +31,7 @@ make_request() {
     fi
     
     # Print results (you can modify this part to process the data as needed)
-    echo "$response" | jq -r '.places[] | "Name: \(.displayName.text), Address: \(.formattedAddress)"'
+    echo "$response" #| jq -r '.places[] | "Name: \(.displayName.text), Address: \(.formattedAddress)"'
     
     # Count results in this page
     results_in_page=$(echo "$response" | jq '.places | length')
